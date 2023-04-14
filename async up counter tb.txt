@@ -1,0 +1,30 @@
+`timescale 1ns / 1ps
+
+
+module async_up_count();
+    reg clk,rst;
+    wire [3:0]out;
+    always #5 clk = ~clk;
+    four_bit_asynchronpus_up_counter uut(out,rst,clk);
+    task initialise;
+    begin
+        clk = 0;
+        rst = 0;
+    end
+    endtask
+    task reset;
+    begin
+        @(negedge clk)
+        rst = 1;
+        @(negedge clk)
+        rst = 0;
+    end
+    endtask
+    initial begin
+        initialise;
+        reset;
+        reset;
+        #50;
+        #100 $finish;
+    end        
+endmodule
